@@ -7,15 +7,16 @@ function Users() {
 
     useEffect(() => {
         axios.get('http://localhost:3001')
-            .then(result => setUsers(result.data))
+            .then(result => {
+                console.log(result.data);
+                setUsers(result.data);
+            })
             .catch(err => console.log(err));
     }, []);
-
     const handleDelete = (id) => {
         axios.delete(`http://localhost:3001/deleteUser/${id}`)
             .then(res => {
                 console.log(res);
-                // Update the state to remove the deleted user without reloading the page
                 setUsers(users.filter(user => user._id !== id));
             })
             .catch(err => console.log(err));
@@ -24,10 +25,14 @@ function Users() {
     return (
         <div className='d-flex vh-100 bg-primary justify-content-center align-items-center'>
             <div className='w-75 bg-white rounded p-3'>
-                <Link to="/create" className='btn btn-success'>Add +</Link>
-                <table className='table'>
+                <div className='d-flex justify-content-between align-items-center mb-3'>
+                    <h2>Users</h2>
+                    <Link to="/create" className='btn btn-success'>Add +</Link>
+                </div>
+                <table className='table table-striped'>
                     <thead>
                         <tr>
+                            <th>Profile Image</th>
                             <th>Name</th>
                             <th>Email</th>
                             <th>Age</th>
@@ -37,13 +42,26 @@ function Users() {
                     <tbody>
                         {users.map((user) => (
                             <tr key={user._id}>
+                                <td>
+                                    {user.profileImage ? (
+                                        <img 
+                                            src={user.profileImage} 
+                                            alt={user.name} 
+                                            className='img-thumbnail' 
+                                            style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+                                        />
+                                    ) : (
+                                        <div className='bg-secondary text-white d-flex align-items-center justify-content-center' style={{ width: '100px', height: '100px' }}>
+                                            <span>No Image</span>
+                                        </div>
+                                    )}
+                                </td>
                                 <td>{user.name}</td>
                                 <td>{user.email}</td>
                                 <td>{user.age}</td>
                                 <td>
                                     <Link to={`/update/${user._id}`} className='btn btn-success me-2'>Update</Link>
-                                    <button className='btn btn-danger me-2' 
-                                    onClick={() => handleDelete(user._id)}>Delete</button>
+                                    <button className='btn btn-danger' onClick={() => handleDelete(user._id)}>Delete</button>
                                 </td>
                             </tr>
                         ))}
