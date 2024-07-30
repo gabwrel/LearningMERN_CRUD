@@ -9,12 +9,15 @@ function CreateUser() {
     const [profileImage, setProfileImage] = useState(null); // State for the image file
     const navigate = useNavigate();
 
+    // Function para sa pag-handle sang image change
     const handleImageChange = (e) => {
-        setProfileImage(e.target.files[0]); // Get the selected file
+        setProfileImage(e.target.files[0]); // Kwaon ang napili nga file
     };
 
+
+    // Function para sa pag submit ka form
     const submitForm = (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Para hindi mag reload ang page
         const formData = new FormData();
         formData.append('name', name);
         formData.append('email', email);
@@ -22,10 +25,10 @@ function CreateUser() {
         if (profileImage) {
             formData.append('profileImage', profileImage); // Append the image file
         }
-
+        // Pag-send sang POST request sa server
         axios.post('http://localhost:3001/createUser', formData, {
             headers: {
-                'Content-Type': 'multipart/form-data' // Set the content type to multipart/form-data
+                'Content-Type': 'multipart/form-data' // I-set ang content type para sa file upload
             }
         })
         .then(result => {
